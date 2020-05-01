@@ -1,0 +1,173 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+eProdService
+</name>
+</assembly>
+<members>
+<member name="M:eProdService.cls.base.DBBase`1.GetConnection(System.String)">
+	<summary>
+ Gets Connection out of Web.config
+ </summary>
+	<returns>Returns SqlConnection</returns>
+</member><member name="M:eProdService.cls.base.DBBase`1.GetData(System.Data.SqlClient.SqlCommand)">
+	<summary>
+ Gets data out of the database
+ </summary>
+	<param name="cmd">The SQL Command</param>
+	<returns>DataTable with the results</returns>
+</member><member name="M:eProdService.cls.base.DBBase`1.GetData(System.String)">
+	<summary>
+ Gets data out of database using a plain text string command
+ </summary>
+	<param name="sql">string command to be executed</param>
+	<returns>DataTable with results</returns>
+</member><member name="M:eProdService.cls.base.DBBase`1.ExecuteNonQuery(System.Data.SqlClient.SqlCommand)">
+	<summary>
+ Executes a NonQuery
+ </summary>
+	<param name="cmd">NonQuery to execute</param>
+</member><member name="M:eProdService.cls.base.DBBase`1.DBSize">
+	<summary>
+ Gets the database size
+ </summary>
+	<returns>intager value for database size</returns>
+</member><member name="M:eProdService.cls.base.DBBase`1.GetMyData(MySql.Data.MySqlClient.MySqlCommand)">
+	<summary>
+ Gets data out of the database
+ </summary>
+	<param name="cmd">The SQL Command</param>
+	<returns>DataTable with the results</returns>
+</member><member name="M:eProdService.cls.base.DBBase`1.GetMyData(System.String)">
+	<summary>
+ Gets data out of database using a plain text string command
+ </summary>
+	<param name="sql">string command to be executed</param>
+	<returns>DataTable with results</returns>
+</member><member name="M:eProdService.cls.base.DBBase`1.ExecuteMyNonQuery(MySql.Data.MySqlClient.MySqlCommand)">
+	<summary>
+ Executes a NonQuery
+ </summary>
+	<param name="cmd">NonQuery to execute</param>
+</member><member name="M:eProdService.cls.base.DBBase`1.MyDBSize">
+	<summary>
+ Gets the database size
+ </summary>
+	<returns>intager value for database size</returns>
+</member><member name="M:eProdService.cIni.#ctor(System.String)">
+	<summary>
+ Declare INI Class
+ </summary>
+</member><member name="P:eProdService.cIni.IniFile">
+	<summary>
+ INI Path and Filename
+ </summary>
+</member><member name="P:eProdService.cIni.BufferLen">
+	<summary>
+ Max return length when reading data
+ </summary>
+</member><member name="M:eProdService.cIni.ReadValue(System.String,System.String,System.String)">
+	<summary>
+ Read value from INI File
+ </summary>
+</member><member name="M:eProdService.cIni.WriteValue(System.String,System.String,System.String)">
+	<summary>
+ Write value to INI File
+ </summary>
+</member><member name="M:eProdService.cIni.RemoveValue(System.String,System.String)">
+	<summary>
+ Remove value from INI File
+ </summary>
+</member><member name="M:eProdService.cIni.ReadValues(System.String,System.Array@)">
+	<summary>
+ Read values in a section from INI File
+ </summary>
+</member><member name="M:eProdService.cIni.ReadSections(System.Array@)">
+	<summary>
+ Read sections from INI File
+ </summary>
+</member><member name="M:eProdService.cIni.RemoveSection(System.String)">
+	<summary>
+ Remove section from INI File
+ </summary>
+</member><member name="P:eProdService.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources._erase">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.add">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.copy">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.delete">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.edit">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.events">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.gnome_application_exit">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.no">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.plus">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.remove">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.rtf">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.run">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.save">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.save1">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.settings">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:eProdService.My.Resources.Resources.yes">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="T:eProdService.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+</members>
+</doc>
