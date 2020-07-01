@@ -614,6 +614,7 @@ Module modEProd
             Return dt
         Catch ex As Exception
             blnError = True
+            Return Nothing
         End Try
 
     End Function

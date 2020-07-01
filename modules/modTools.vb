@@ -5,6 +5,51 @@ Imports System.IO
 
 Module modTools
 
+
+
+    Public Function SetMeldeStatus(strOrderNr As String, dtmDatum As Date, connKBS As SqlConnection) As Boolean
+        Dim strSQL As String = ""
+
+        strSQL = "SELECT bsx_imeldestatus, bsx_idmeldender, bsx_meldedatum, bsx_iderfasser FROM VKBELEGSTUB WHERE bsx_belegnr = @strOrderNr"
+
+        Using cmd As New SqlCommand(strSQL, connKBS)
+            cmd.Parameters.AddWithValue("@strOrderNr", strOrderNr)
+            Dim dt As DataTable = GetData(cmd)
+
+            If dt.Rows.Count > 0 Then
+                Dim intMeldeStatus As Integer = DB2IntZero(dt.Rows(0)("bsx_imeldestatus"))
+                Dim dtmMeldeDatum As Date
+                Dim lngIdMeldender As Long
+
+                If intMeldeStatus <> 21 Then
+
+                    If IsDBNull(dt.Rows(0)("bsx_meldedatum")) Then
+                        dtmMeldeDatum = dtmDatum
+                    Else
+                        dtmMeldeDatum = CDate(dt.Rows(0)("bsx_meldedatum"))
+                    End If
+
+                    lngIdMeldender = DB2Lng(dt.Rows(0)("bsx_iderfasser"))
+
+                    strSQL = "UPDATE vkbelegstub SET bsx_imeldestatus = @intMeldeStatus, bsx_meldedatum = @dtmMeldeDatum, bsx_idmeldender = @lngIdMeldender " _
+                        & " WHERE bsx_belegnr = @strOrderNrN"
+                    Using cmdU As New SqlCommand(strSQL, connKBS)
+                        cmdU.Parameters.AddWithValue("@intMeldeStatus", 21)
+                        cmdU.Parameters.AddWithValue("@dtmMeldeDatum", dtmMeldeDatum)
+                        cmdU.Parameters.AddWithValue("@lngIdMeldender", lngIdMeldender)
+                        cmdU.Parameters.AddWithValue("@strOrderNrN", strOrderNr)
+                        cmdU.ExecuteNonQuery()
+
+                        Call AddToActionStatusNarocila(frmMainForm.txtLog, "*** Avtomatska prijava naročila " & strOrderNr & vbTab & dtmMeldeDatum)
+                    End Using
+
+                End If
+            End If
+        End Using
+
+
+    End Function
+
     Public Function SetMeldeStatus(ByVal strDocnr As String, ByVal strNotice As String, ByVal lngMeldener As Long, dtmMeldeDate As DateTime, connTools As SqlConnection, connKBS As SqlConnection) As Boolean
         Dim intMeldeStatus As Integer = 21
         Dim dtmMeldeDatum As Date = Date.Today
@@ -465,6 +510,8 @@ Module modTools
                                 'articles
                                 dtmStart = DateAdd(DateInterval.Day, cEvent.EventDays * -1, Now.Date)
                                 dt = GetConfirmedOrdersNotDelivered(dtmStart, Now.Date, True, connTools, connMAWI)
+                            Case clsGlobal.EventType.event_google_order_created
+                                dt = GetGoogleOrders(dtmStart, Now.Date, connTools)
                         End Select
 
 
@@ -714,8 +761,6 @@ Module modTools
 
         Return Nothing
     End Function
-
-
     Public Function GetTechicalFinnishedOrders(ByVal dtmStart As Date, ByVal dtmEnd As Date, connKBS As SqlConnection) As DataTable
 
         Dim strSQL As String = ""
@@ -726,6 +771,23 @@ Module modTools
         Using cmd As New SqlCommand(strSQL, connKBS)
             cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
             cmd.Parameters.AddWithValue("@dtmEnd", dtmEnd)
+            Dim dt As DataTable = GetData(cmd)
+            Return dt
+        End Using
+
+        Return Nothing
+    End Function
+
+
+    Public Function GetGoogleOrders(ByVal dtmStart As Date, ByVal dtmEnd As Date, connTools As SqlConnection) As DataTable
+
+        Dim strSQL As String = ""
+
+        strSQL = "SELECT order_nr as auftragsnummer FROM msora_order_info WHERE convert(date, date_inserted) BETWEEN @dtmStart AND @dtmEnd"
+
+        Using cmd As New SqlCommand(strSQL, connTools)
+            cmd.Parameters.AddWithValue("@dtmStart", dtmStart.Date)
+            cmd.Parameters.AddWithValue("@dtmEnd", dtmEnd.Date)
             Dim dt As DataTable = GetData(cmd)
             Return dt
         End Using
@@ -819,6 +881,26 @@ Module modTools
         strSQL = "SELECT atx_nummer as auftragsnummer FROM kapa_auftrag WHERE atx_datum BETWEEN @dtmStart AND @dtmEnd "
 
         Using cmd As New SqlCommand(strSQL, connKAPA)
+            cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+            cmd.Parameters.AddWithValue("@dtmEnd", dtmEnd)
+
+            Dim dt As DataTable = GetData(cmd)
+
+            Return dt
+
+        End Using
+
+    End Function
+
+    Private Function GetOrdersTechnicalCreated(ByVal dtmStart As Date, ByVal dtmEnd As Date, connKBS As SqlConnection) As DataTable
+
+        Dim strSQL As String = ""
+        Dim dtReturn As New DataTable
+        dtReturn.Columns.Add("auftragsnummer", Type.GetType("System.String"))
+
+        strSQL = "SELECT bsx_belegnr as auftragsnummer FROM VKBELEGSTUB WHERE bsx_erfdatum BETWEEN @dtmStart AND @dtmEnd AND bsx_belegnr LIKE 'T%' AND bsx_ibelegart = 20"
+
+        Using cmd As New SqlCommand(strSQL, connKBS)
             cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
             cmd.Parameters.AddWithValue("@dtmEnd", dtmEnd)
 
@@ -1120,40 +1202,40 @@ Module modTools
                 End If
 
                 dtMainOrder = GetOrderData(strNewOrderNr, connKBS)
+                If Not dtMainOrder Is Nothing Then
+                    If cEvent.EventExcludeReclamation Then
 
-                If cEvent.EventExcludeReclamation Then
+                        If dtMainOrder.Rows.Count > 0 Then
+                            If dtMainOrder(0)("bsx_4_auswahl_reklamacija").ToString.Trim <> "" And dtMainOrder(0)("bsx_4_auswahl_reklamacija").ToString.Trim <> "Rezervacija" Then
+                                blnSkipOrder = True
+                                strReturn = "Order " & strOrderNr & " skipped: " & dtMainOrder(0)("bsx_4_auswahl_reklamacija").ToString.Trim
+                            End If
+                        End If
+                    End If
 
-                    If dtMainOrder.Rows.Count > 0 Then
-                        If dtMainOrder(0)("bsx_4_auswahl_reklamacija").ToString.Trim <> "" Then
-                            blnSkipOrder = True
-                            strReturn = "Order " & strOrderNr & " skipped: " & dtMainOrder(0)("bsx_4_auswahl_reklamacija").ToString.Trim
+                    If cEvent.EventCheckDelivery Then
+                        If dtMainOrder.Rows.Count > 0 Then
+                            If OrderHasDelivery(strNewOrderNr, strRefDoc, dtmRefDate, connKBS) Then
+                                blnSkipOrder = True
+                                strReturn = "Order " & strOrderNr & " skipped: " & "Already delivered: " & strRefDoc & "; " & dtmRefDate.ToString
+                            End If
+                        End If
+                    End If
+
+                    If cEvent.EventCheckMontage Then
+                        If dtMainOrder.Rows.Count > 0 Then
+                            Dim dtmMontageDate As Date
+                            Dim strMontagePerson As String = ""
+                            If OrderHasMontage(strNewOrderNr, cEvent.EventMontageDays, strMontagePerson, dtmMontageDate, connTools) Then
+                                blnSkipOrder = True
+                                strReturn = "Order " & strOrderNr & " skipped: " & "Montage already done or in next: " & cEvent.EventMontageDays & " days; " & dtmMontageDate.ToString & "; Montage person: " & strMontagePerson
+                            End If
                         End If
                     End If
                 End If
-
-                If cEvent.EventCheckDelivery Then
-                    If dtMainOrder.Rows.Count > 0 Then
-                        If OrderHasDelivery(strNewOrderNr, strRefDoc, dtmRefDate, connKBS) Then
-                            blnSkipOrder = True
-                            strReturn = "Order " & strOrderNr & " skipped: " & "Already delivered: " & strRefDoc & "; " & dtmRefDate.ToString
-                        End If
-                    End If
-                End If
-
-                If cEvent.EventCheckMontage Then
-                    If dtMainOrder.Rows.Count > 0 Then
-                        Dim dtmMontageDate As Date
-                        Dim strMontagePerson As String = ""
-                        If OrderHasMontage(strNewOrderNr, cEvent.EventMontageDays, strMontagePerson, dtmMontageDate, connTools) Then
-                            blnSkipOrder = True
-                            strReturn = "Order " & strOrderNr & " skipped: " & "Montage already done or in next: " & cEvent.EventMontageDays & " days; " & dtmMontageDate.ToString & "; Montage person: " & strMontagePerson
-                        End If
-                    End If
-                End If
-
 
             Else
-                strNewOrderNr = strOrderNr
+                    strNewOrderNr = strOrderNr
             End If
 
 
@@ -2524,6 +2606,10 @@ Module modTools
                         Else
                             Return "100 %"
                         End If
+                    Case "GOOGLE_ID"
+                        'poiščemo GoogleID v msora_order_info
+                        Return GetGoogleId(strOrderNr)
+
                 End Select
             Case Else
                 Return ""
@@ -2729,7 +2815,8 @@ Module modTools
             End If
 
             If strText.Contains("<?summe_netto>") Then
-                If dtMainOrder.Rows.Count > 0 Then
+
+                If Not dtMainOrder Is Nothing Then
                     strText = strText.Replace("<?summe_netto>", dtMainOrder(0)("bsx_summenetto").ToString)
                 Else
                     If Not blnSkip Then
@@ -3047,8 +3134,22 @@ Module modTools
         End Try
 
     End Sub
+    Public Function IsValidDate(ByVal dtmDate As DateTime) As Boolean
 
-    Private Function GetLanguage(ByVal strOrderNr As String, connTools As SqlConnection, connKBS As SqlConnection) As String
+        Try
+            If dtmDate > CDate("01/01/1900") Then
+                Return True
+            End If
+        Catch ex As Exception
+
+            ' if a test date cannot be created, the
+            ' method will return false
+            Return False
+
+        End Try
+
+    End Function
+    Public Function GetLanguage(ByVal strOrderNr As String, connTools As SqlConnection, connKBS As SqlConnection) As String
         Dim strSQL As String = ""
         Try
 

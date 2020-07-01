@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "msora-order-info",
+  "private_key_id": "7e501c877d10a3974afd5afb87147e357a02339d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC9JrjVbIkgx+R3\nuaPZph0uHKbP1Q/2Xfw8C2fYyPRAcFlpLmI1tn3UX1irgOALJ8sI2QZkl9JRam+D\nO8os8fgKs14ZI/VM+A7yC5KvW66M7S4YHR5FUDuCyZEfZxKR0SPU6vKWurXprbOU\nv/jGPJAHO2Xx1QVnYd3bIU+ML973fCP88vmc581sJUPnkIn9STbL880SWyb5Ykgc\nrDDw5l9H1HfiAr5VzeH7IO2M6OPzYN8/4LdkrNWxp5SpJ9btyjIWGd88IGnOPp0K\noxWAJNGmDrVxNabqu8YNTM+OvbTcTxAggpmOGi2bHz0h/Y1rkq+ssbiVu+wlKv1s\nr4FyQo2PAgMBAAECggEACJ+3VaO5LNFwTTUdj1LPicaspFUmgSkP0v0CIxQmbrmw\nmecPeztyyTf/pvIdROTvkNu0OunhIO0lYGpdcWcm0/YRmDvXd0boB4kXiv83Gh3G\nODs7ohViYTgncbMVWaibZZ3AqbahjKHqyiFmikNAndPLdhcsQ+ZmYxNFuTKFi+r8\n9Y9fZ31LfV0Hw8oVTFu4E+3cMxrIZvs3DnD6/PZmdsmEL2lHrlV7k9ssWs91Fq/I\nzOXEmI9+g7cSxI0trI4J3/kgdfUB8llyjGOsiYsXPs8JHWgKpD1A/Ymgv4MJkKZb\nWHs8O8iSwJIE6Lz9u/V7c+VVHe8/vUFmT+rE2DWGAQKBgQDjQv4AngLzpddvvyCl\npfml0c9XqTgnwkcM6Tn2nQ4SRtZXSZFejiXQ30nZibxZasePlXPA2ORk9X/zDB8f\nPtt16aY4w3RHTe6bhDtI6VZIB95mO31tr8ZMtICEnbAbJe/XV7Wti2bzk1szFteY\ntKibpZ31o/sqRPygDFCAr45VTwKBgQDVEgDieYWqmK4ILcMTbNBivgDObl1Mg+em\nqwv6wsMaLpLy77T28g1X7w2M0SfAf0VkgyMnWm0EghoNmO0cSjPAzJSDQFfWedph\nquJoakmAM8FHoepBFqQl1KHxvap3eAGp+e3CoJ4avwvhXkM3dd4iTZtitRAfDErY\noxsVEVKzwQKBgQC+06Pg9M1ZtWm/BWfub/2+hPxriUYD7JgoeTYYpCwKoLyeMsID\n+aw7RSMHrSYglw7WvBGkXvr440P627TOUcOJsRXIGCbtML0ojNITGQtAFItkoJNj\npPMHuZEoyhfz09keoyGEhcd+w78SmR2Tti7V8y098+GUzrSp121JgSAs9QKBgQC5\nokfXCN0l9oOZaJVO9TzQ6o01TP5ITZujn95+CPWGeBFbSvC1PcnWVNXPW+JwWfIR\nUhdsj+HvTZJ5SkU6ooNYdGTnvUVJ/TwAX6uGISQMaAr659x5/Mnik9DMFtzP3WRF\nvRQiv2FAGDa3kTKqvSxdYpQAeZOkGUeUWvabck5FgQKBgHCqZp+JBzETY3Pf3UQ5\n20NRQaI8bM4CO/59XpGhhLNxlZteMj/8wwwAUklojJ8VXd4kT+cg3djtHPNl7H2k\n9ckGjYPYUpxtxx7OIS7/8x9BkC2/0VEMJHtXcyg28HrOZaklmsb4Qj97K/H7j1VZ\nA/wU7NsKI8wUL62/rzUFR+Q4\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-uw4qb@msora-order-info.iam.gserviceaccount.com",
+  "client_id": "109754348138606207175",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-uw4qb%40msora-order-info.iam.gserviceaccount.com"
+}

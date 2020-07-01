@@ -52,6 +52,39 @@ Partial Class frmMainForm
         Me.chkAutoCheckCutterArchive = New System.Windows.Forms.CheckBox()
         Me.tmrCutterSendFile = New System.Windows.Forms.Timer(Me.components)
         Me.tmrCutterArchive = New System.Windows.Forms.Timer(Me.components)
+        Me.lblNextSklic = New System.Windows.Forms.Label()
+        Me.chkUpdateSklic = New System.Windows.Forms.CheckBox()
+        Me.tmrSklic = New System.Windows.Forms.Timer(Me.components)
+        Me.chkUpdateMonterOsn = New System.Windows.Forms.CheckBox()
+        Me.lblNextMonter = New System.Windows.Forms.Label()
+        Me.lblNextSlikaVrtanja = New System.Windows.Forms.Label()
+        Me.chkEProdSlikaVrtanja = New System.Windows.Forms.CheckBox()
+        Me.tmrMonter = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrSlikaVrtanja = New System.Windows.Forms.Timer(Me.components)
+        Me.lblStart = New System.Windows.Forms.Label()
+        Me.chkKapaLog = New System.Windows.Forms.CheckBox()
+        Me.lblNextKapaLog = New System.Windows.Forms.Label()
+        Me.tmrKapaLog = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrSpica = New System.Windows.Forms.Timer(Me.components)
+        Me.chkSpicaEventUpdate = New System.Windows.Forms.CheckBox()
+        Me.lblSpicaMinutes = New System.Windows.Forms.Label()
+        Me.chkLockTechnicalOrders = New System.Windows.Forms.CheckBox()
+        Me.lblLockTechnicalOrders = New System.Windows.Forms.Label()
+        Me.tmrLockTechnicalOrders = New System.Windows.Forms.Timer(Me.components)
+        Me.cmdFirebase = New System.Windows.Forms.Button()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.lblStatusNarocila = New System.Windows.Forms.Label()
+        Me.chkStatusNarocila = New System.Windows.Forms.CheckBox()
+        Me.tmrStatusNarocila = New System.Windows.Forms.Timer(Me.components)
+        Me.cmdImportTexts = New System.Windows.Forms.Button()
+        Me.cmdExportTexts = New System.Windows.Forms.Button()
+        Me.btnStatusNarocila = New System.Windows.Forms.Button()
+        Me.btnLockTechnicalOrders = New System.Windows.Forms.Button()
+        Me.cmdUpdateSpicaEvents = New System.Windows.Forms.Button()
+        Me.btnManualKapaLog = New System.Windows.Forms.Button()
+        Me.cmdManualSlikaVrtanja = New System.Windows.Forms.Button()
+        Me.cmdManualUpdateMonter = New System.Windows.Forms.Button()
+        Me.cmdManualUpdateSklic = New System.Windows.Forms.Button()
         Me.cmdManualProcessDeleteCutterFiles = New System.Windows.Forms.Button()
         Me.cmdManualProcessCutter = New System.Windows.Forms.Button()
         Me.cmdManualProcessMAWIDates = New System.Windows.Forms.Button()
@@ -60,32 +93,7 @@ Partial Class frmMainForm
         Me.cmdManualStartUpdateName = New System.Windows.Forms.Button()
         Me.cmdEvents = New System.Windows.Forms.Button()
         Me.cmdRtfEdit = New System.Windows.Forms.Button()
-        Me.lblNextSklic = New System.Windows.Forms.Label()
-        Me.cmdManualUpdateSklic = New System.Windows.Forms.Button()
-        Me.chkUpdateSklic = New System.Windows.Forms.CheckBox()
-        Me.tmrSklic = New System.Windows.Forms.Timer(Me.components)
-        Me.chkUpdateMonterOsn = New System.Windows.Forms.CheckBox()
-        Me.cmdManualUpdateMonter = New System.Windows.Forms.Button()
-        Me.lblNextMonter = New System.Windows.Forms.Label()
-        Me.lblNextSlikaVrtanja = New System.Windows.Forms.Label()
-        Me.cmdManualSlikaVrtanja = New System.Windows.Forms.Button()
-        Me.chkEProdSlikaVrtanja = New System.Windows.Forms.CheckBox()
-        Me.tmrMonter = New System.Windows.Forms.Timer(Me.components)
-        Me.tmrSlikaVrtanja = New System.Windows.Forms.Timer(Me.components)
-        Me.lblStart = New System.Windows.Forms.Label()
-        Me.chkKapaLog = New System.Windows.Forms.CheckBox()
-        Me.btnManualKapaLog = New System.Windows.Forms.Button()
-        Me.lblNextKapaLog = New System.Windows.Forms.Label()
-        Me.tmrKapaLog = New System.Windows.Forms.Timer(Me.components)
-        Me.tmrSpica = New System.Windows.Forms.Timer(Me.components)
-        Me.chkSpicaEventUpdate = New System.Windows.Forms.CheckBox()
-        Me.cmdUpdateSpicaEvents = New System.Windows.Forms.Button()
-        Me.lblSpicaMinutes = New System.Windows.Forms.Label()
-        Me.chkLockTechnicalOrders = New System.Windows.Forms.CheckBox()
-        Me.btnLockTechnicalOrders = New System.Windows.Forms.Button()
-        Me.lblLockTechnicalOrders = New System.Windows.Forms.Label()
-        Me.tmrLockTechnicalOrders = New System.Windows.Forms.Timer(Me.components)
-        Me.cmdFirebase = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -136,14 +144,15 @@ Partial Class frmMainForm
         'txtLog
         '
         Me.txtLog.ContextMenuStrip = Me.ContextMenuStrip1
-        Me.txtLog.Location = New System.Drawing.Point(12, 464)
+        Me.txtLog.Location = New System.Drawing.Point(12, 511)
         Me.txtLog.Name = "txtLog"
-        Me.txtLog.Size = New System.Drawing.Size(689, 211)
+        Me.txtLog.Size = New System.Drawing.Size(689, 164)
         Me.txtLog.TabIndex = 5
         Me.txtLog.Text = ""
         '
         'ContextMenuStrip1
         '
+        Me.ContextMenuStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
         Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PosodobiŠpicaEventeToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip1.Size = New System.Drawing.Size(229, 28)
@@ -327,6 +336,286 @@ Partial Class frmMainForm
         Me.tmrCutterArchive.Enabled = True
         Me.tmrCutterArchive.Interval = 60000
         '
+        'lblNextSklic
+        '
+        Me.lblNextSklic.AutoSize = True
+        Me.lblNextSklic.ForeColor = System.Drawing.Color.Red
+        Me.lblNextSklic.Location = New System.Drawing.Point(631, 242)
+        Me.lblNextSklic.Name = "lblNextSklic"
+        Me.lblNextSklic.Size = New System.Drawing.Size(59, 20)
+        Me.lblNextSklic.TabIndex = 47
+        Me.lblNextSklic.Text = "Label1"
+        '
+        'chkUpdateSklic
+        '
+        Me.chkUpdateSklic.AutoSize = True
+        Me.chkUpdateSklic.Location = New System.Drawing.Point(12, 246)
+        Me.chkUpdateSklic.Name = "chkUpdateSklic"
+        Me.chkUpdateSklic.Size = New System.Drawing.Size(128, 24)
+        Me.chkUpdateSklic.TabIndex = 44
+        Me.chkUpdateSklic.Text = "Ažuriraj sklic"
+        Me.chkUpdateSklic.UseVisualStyleBackColor = True
+        '
+        'tmrSklic
+        '
+        Me.tmrSklic.Enabled = True
+        Me.tmrSklic.Interval = 60000
+        '
+        'chkUpdateMonterOsn
+        '
+        Me.chkUpdateMonterOsn.AutoSize = True
+        Me.chkUpdateMonterOsn.Location = New System.Drawing.Point(12, 281)
+        Me.chkUpdateMonterOsn.Name = "chkUpdateMonterOsn"
+        Me.chkUpdateMonterOsn.Size = New System.Drawing.Size(261, 24)
+        Me.chkUpdateMonterOsn.TabIndex = 48
+        Me.chkUpdateMonterOsn.Text = "Monter osn. naloga, R končano"
+        Me.chkUpdateMonterOsn.UseVisualStyleBackColor = True
+        '
+        'lblNextMonter
+        '
+        Me.lblNextMonter.AutoSize = True
+        Me.lblNextMonter.ForeColor = System.Drawing.Color.Red
+        Me.lblNextMonter.Location = New System.Drawing.Point(631, 281)
+        Me.lblNextMonter.Name = "lblNextMonter"
+        Me.lblNextMonter.Size = New System.Drawing.Size(59, 20)
+        Me.lblNextMonter.TabIndex = 50
+        Me.lblNextMonter.Text = "Label1"
+        '
+        'lblNextSlikaVrtanja
+        '
+        Me.lblNextSlikaVrtanja.AutoSize = True
+        Me.lblNextSlikaVrtanja.ForeColor = System.Drawing.Color.Red
+        Me.lblNextSlikaVrtanja.Location = New System.Drawing.Point(631, 320)
+        Me.lblNextSlikaVrtanja.Name = "lblNextSlikaVrtanja"
+        Me.lblNextSlikaVrtanja.Size = New System.Drawing.Size(59, 20)
+        Me.lblNextSlikaVrtanja.TabIndex = 53
+        Me.lblNextSlikaVrtanja.Text = "Label1"
+        '
+        'chkEProdSlikaVrtanja
+        '
+        Me.chkEProdSlikaVrtanja.AutoSize = True
+        Me.chkEProdSlikaVrtanja.Location = New System.Drawing.Point(12, 320)
+        Me.chkEProdSlikaVrtanja.Name = "chkEProdSlikaVrtanja"
+        Me.chkEProdSlikaVrtanja.Size = New System.Drawing.Size(230, 24)
+        Me.chkEProdSlikaVrtanja.TabIndex = 51
+        Me.chkEProdSlikaVrtanja.Text = "Slika vrtanja, profil izvedba"
+        Me.chkEProdSlikaVrtanja.UseVisualStyleBackColor = True
+        '
+        'tmrMonter
+        '
+        Me.tmrMonter.Enabled = True
+        Me.tmrMonter.Interval = 60000
+        '
+        'tmrSlikaVrtanja
+        '
+        Me.tmrSlikaVrtanja.Enabled = True
+        Me.tmrSlikaVrtanja.Interval = 60000
+        '
+        'lblStart
+        '
+        Me.lblStart.AutoSize = True
+        Me.lblStart.Location = New System.Drawing.Point(495, 688)
+        Me.lblStart.Name = "lblStart"
+        Me.lblStart.Size = New System.Drawing.Size(0, 20)
+        Me.lblStart.TabIndex = 54
+        '
+        'chkKapaLog
+        '
+        Me.chkKapaLog.AutoSize = True
+        Me.chkKapaLog.Location = New System.Drawing.Point(12, 357)
+        Me.chkKapaLog.Name = "chkKapaLog"
+        Me.chkKapaLog.Size = New System.Drawing.Size(251, 24)
+        Me.chkKapaLog.TabIndex = 55
+        Me.chkKapaLog.Text = "Kapa logiranje, uvoz naslovov"
+        Me.chkKapaLog.UseVisualStyleBackColor = True
+        '
+        'lblNextKapaLog
+        '
+        Me.lblNextKapaLog.AutoSize = True
+        Me.lblNextKapaLog.ForeColor = System.Drawing.Color.Red
+        Me.lblNextKapaLog.Location = New System.Drawing.Point(631, 358)
+        Me.lblNextKapaLog.Name = "lblNextKapaLog"
+        Me.lblNextKapaLog.Size = New System.Drawing.Size(59, 20)
+        Me.lblNextKapaLog.TabIndex = 57
+        Me.lblNextKapaLog.Text = "Label1"
+        '
+        'tmrKapaLog
+        '
+        Me.tmrKapaLog.Enabled = True
+        Me.tmrKapaLog.Interval = 60000
+        '
+        'tmrSpica
+        '
+        Me.tmrSpica.Enabled = True
+        Me.tmrSpica.Interval = 60000
+        '
+        'chkSpicaEventUpdate
+        '
+        Me.chkSpicaEventUpdate.AutoSize = True
+        Me.chkSpicaEventUpdate.Location = New System.Drawing.Point(12, 396)
+        Me.chkSpicaEventUpdate.Name = "chkSpicaEventUpdate"
+        Me.chkSpicaEventUpdate.Size = New System.Drawing.Size(201, 24)
+        Me.chkSpicaEventUpdate.TabIndex = 59
+        Me.chkSpicaEventUpdate.Text = "Posodobi Špica evente"
+        Me.chkSpicaEventUpdate.UseVisualStyleBackColor = True
+        '
+        'lblSpicaMinutes
+        '
+        Me.lblSpicaMinutes.AutoSize = True
+        Me.lblSpicaMinutes.ForeColor = System.Drawing.Color.Red
+        Me.lblSpicaMinutes.Location = New System.Drawing.Point(631, 391)
+        Me.lblSpicaMinutes.Name = "lblSpicaMinutes"
+        Me.lblSpicaMinutes.Size = New System.Drawing.Size(59, 20)
+        Me.lblSpicaMinutes.TabIndex = 61
+        Me.lblSpicaMinutes.Text = "Label1"
+        '
+        'chkLockTechnicalOrders
+        '
+        Me.chkLockTechnicalOrders.AutoSize = True
+        Me.chkLockTechnicalOrders.Location = New System.Drawing.Point(12, 434)
+        Me.chkLockTechnicalOrders.Name = "chkLockTechnicalOrders"
+        Me.chkLockTechnicalOrders.Size = New System.Drawing.Size(277, 24)
+        Me.chkLockTechnicalOrders.TabIndex = 62
+        Me.chkLockTechnicalOrders.Text = "Zakleni tehnično obdelane naloge"
+        Me.chkLockTechnicalOrders.UseVisualStyleBackColor = True
+        '
+        'lblLockTechnicalOrders
+        '
+        Me.lblLockTechnicalOrders.AutoSize = True
+        Me.lblLockTechnicalOrders.ForeColor = System.Drawing.Color.Red
+        Me.lblLockTechnicalOrders.Location = New System.Drawing.Point(631, 429)
+        Me.lblLockTechnicalOrders.Name = "lblLockTechnicalOrders"
+        Me.lblLockTechnicalOrders.Size = New System.Drawing.Size(59, 20)
+        Me.lblLockTechnicalOrders.TabIndex = 64
+        Me.lblLockTechnicalOrders.Text = "Label1"
+        '
+        'tmrLockTechnicalOrders
+        '
+        Me.tmrLockTechnicalOrders.Enabled = True
+        Me.tmrLockTechnicalOrders.Interval = 60000
+        '
+        'cmdFirebase
+        '
+        Me.cmdFirebase.Location = New System.Drawing.Point(571, 444)
+        Me.cmdFirebase.Name = "cmdFirebase"
+        Me.cmdFirebase.Size = New System.Drawing.Size(53, 46)
+        Me.cmdFirebase.TabIndex = 65
+        Me.cmdFirebase.Text = "Test"
+        Me.cmdFirebase.UseVisualStyleBackColor = True
+        '
+        'TextBox1
+        '
+        Me.TextBox1.Location = New System.Drawing.Point(487, 705)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(87, 26)
+        Me.TextBox1.TabIndex = 66
+        '
+        'lblStatusNarocila
+        '
+        Me.lblStatusNarocila.AutoSize = True
+        Me.lblStatusNarocila.ForeColor = System.Drawing.Color.Red
+        Me.lblStatusNarocila.Location = New System.Drawing.Point(630, 464)
+        Me.lblStatusNarocila.Name = "lblStatusNarocila"
+        Me.lblStatusNarocila.Size = New System.Drawing.Size(59, 20)
+        Me.lblStatusNarocila.TabIndex = 69
+        Me.lblStatusNarocila.Text = "Label1"
+        '
+        'chkStatusNarocila
+        '
+        Me.chkStatusNarocila.AutoSize = True
+        Me.chkStatusNarocila.Location = New System.Drawing.Point(11, 469)
+        Me.chkStatusNarocila.Name = "chkStatusNarocila"
+        Me.chkStatusNarocila.Size = New System.Drawing.Size(281, 24)
+        Me.chkStatusNarocila.TabIndex = 67
+        Me.chkStatusNarocila.Text = "Posodobi MSORA status naročila"
+        Me.chkStatusNarocila.UseVisualStyleBackColor = True
+        '
+        'tmrStatusNarocila
+        '
+        Me.tmrStatusNarocila.Enabled = True
+        Me.tmrStatusNarocila.Interval = 60000
+        '
+        'cmdImportTexts
+        '
+        Me.cmdImportTexts.Image = Global.eProdService.My.Resources.Resources.import1
+        Me.cmdImportTexts.Location = New System.Drawing.Point(398, 438)
+        Me.cmdImportTexts.Name = "cmdImportTexts"
+        Me.cmdImportTexts.Size = New System.Drawing.Size(55, 59)
+        Me.cmdImportTexts.TabIndex = 71
+        Me.cmdImportTexts.UseVisualStyleBackColor = True
+        '
+        'cmdExportTexts
+        '
+        Me.cmdExportTexts.Image = Global.eProdService.My.Resources.Resources.export
+        Me.cmdExportTexts.Location = New System.Drawing.Point(332, 438)
+        Me.cmdExportTexts.Name = "cmdExportTexts"
+        Me.cmdExportTexts.Size = New System.Drawing.Size(55, 59)
+        Me.cmdExportTexts.TabIndex = 70
+        Me.cmdExportTexts.UseVisualStyleBackColor = True
+        '
+        'btnStatusNarocila
+        '
+        Me.btnStatusNarocila.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.btnStatusNarocila.Location = New System.Drawing.Point(288, 464)
+        Me.btnStatusNarocila.Name = "btnStatusNarocila"
+        Me.btnStatusNarocila.Size = New System.Drawing.Size(37, 33)
+        Me.btnStatusNarocila.TabIndex = 68
+        Me.btnStatusNarocila.UseVisualStyleBackColor = True
+        '
+        'btnLockTechnicalOrders
+        '
+        Me.btnLockTechnicalOrders.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.btnLockTechnicalOrders.Location = New System.Drawing.Point(289, 429)
+        Me.btnLockTechnicalOrders.Name = "btnLockTechnicalOrders"
+        Me.btnLockTechnicalOrders.Size = New System.Drawing.Size(37, 33)
+        Me.btnLockTechnicalOrders.TabIndex = 63
+        Me.btnLockTechnicalOrders.UseVisualStyleBackColor = True
+        '
+        'cmdUpdateSpicaEvents
+        '
+        Me.cmdUpdateSpicaEvents.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.cmdUpdateSpicaEvents.Location = New System.Drawing.Point(289, 391)
+        Me.cmdUpdateSpicaEvents.Name = "cmdUpdateSpicaEvents"
+        Me.cmdUpdateSpicaEvents.Size = New System.Drawing.Size(37, 33)
+        Me.cmdUpdateSpicaEvents.TabIndex = 60
+        Me.cmdUpdateSpicaEvents.UseVisualStyleBackColor = True
+        '
+        'btnManualKapaLog
+        '
+        Me.btnManualKapaLog.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.btnManualKapaLog.Location = New System.Drawing.Point(289, 352)
+        Me.btnManualKapaLog.Name = "btnManualKapaLog"
+        Me.btnManualKapaLog.Size = New System.Drawing.Size(37, 33)
+        Me.btnManualKapaLog.TabIndex = 56
+        Me.btnManualKapaLog.UseVisualStyleBackColor = True
+        '
+        'cmdManualSlikaVrtanja
+        '
+        Me.cmdManualSlikaVrtanja.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.cmdManualSlikaVrtanja.Location = New System.Drawing.Point(289, 311)
+        Me.cmdManualSlikaVrtanja.Name = "cmdManualSlikaVrtanja"
+        Me.cmdManualSlikaVrtanja.Size = New System.Drawing.Size(37, 33)
+        Me.cmdManualSlikaVrtanja.TabIndex = 52
+        Me.cmdManualSlikaVrtanja.UseVisualStyleBackColor = True
+        '
+        'cmdManualUpdateMonter
+        '
+        Me.cmdManualUpdateMonter.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.cmdManualUpdateMonter.Location = New System.Drawing.Point(289, 272)
+        Me.cmdManualUpdateMonter.Name = "cmdManualUpdateMonter"
+        Me.cmdManualUpdateMonter.Size = New System.Drawing.Size(37, 33)
+        Me.cmdManualUpdateMonter.TabIndex = 49
+        Me.cmdManualUpdateMonter.UseVisualStyleBackColor = True
+        '
+        'cmdManualUpdateSklic
+        '
+        Me.cmdManualUpdateSklic.Image = Global.eProdService.My.Resources.Resources.yes
+        Me.cmdManualUpdateSklic.Location = New System.Drawing.Point(288, 233)
+        Me.cmdManualUpdateSklic.Name = "cmdManualUpdateSklic"
+        Me.cmdManualUpdateSklic.Size = New System.Drawing.Size(37, 33)
+        Me.cmdManualUpdateSklic.TabIndex = 45
+        Me.cmdManualUpdateSklic.UseVisualStyleBackColor = True
+        '
         'cmdManualProcessDeleteCutterFiles
         '
         Me.cmdManualProcessDeleteCutterFiles.Image = Global.eProdService.My.Resources.Resources.yes
@@ -399,226 +688,14 @@ Partial Class frmMainForm
         Me.cmdRtfEdit.TabIndex = 22
         Me.cmdRtfEdit.UseVisualStyleBackColor = True
         '
-        'lblNextSklic
+        'Button1
         '
-        Me.lblNextSklic.AutoSize = True
-        Me.lblNextSklic.ForeColor = System.Drawing.Color.Red
-        Me.lblNextSklic.Location = New System.Drawing.Point(631, 242)
-        Me.lblNextSklic.Name = "lblNextSklic"
-        Me.lblNextSklic.Size = New System.Drawing.Size(59, 20)
-        Me.lblNextSklic.TabIndex = 47
-        Me.lblNextSklic.Text = "Label1"
-        '
-        'cmdManualUpdateSklic
-        '
-        Me.cmdManualUpdateSklic.Image = Global.eProdService.My.Resources.Resources.yes
-        Me.cmdManualUpdateSklic.Location = New System.Drawing.Point(288, 233)
-        Me.cmdManualUpdateSklic.Name = "cmdManualUpdateSklic"
-        Me.cmdManualUpdateSklic.Size = New System.Drawing.Size(37, 33)
-        Me.cmdManualUpdateSklic.TabIndex = 45
-        Me.cmdManualUpdateSklic.UseVisualStyleBackColor = True
-        '
-        'chkUpdateSklic
-        '
-        Me.chkUpdateSklic.AutoSize = True
-        Me.chkUpdateSklic.Location = New System.Drawing.Point(12, 246)
-        Me.chkUpdateSklic.Name = "chkUpdateSklic"
-        Me.chkUpdateSklic.Size = New System.Drawing.Size(128, 24)
-        Me.chkUpdateSklic.TabIndex = 44
-        Me.chkUpdateSklic.Text = "Ažuriraj sklic"
-        Me.chkUpdateSklic.UseVisualStyleBackColor = True
-        '
-        'tmrSklic
-        '
-        Me.tmrSklic.Enabled = True
-        Me.tmrSklic.Interval = 60000
-        '
-        'chkUpdateMonterOsn
-        '
-        Me.chkUpdateMonterOsn.AutoSize = True
-        Me.chkUpdateMonterOsn.Location = New System.Drawing.Point(12, 281)
-        Me.chkUpdateMonterOsn.Name = "chkUpdateMonterOsn"
-        Me.chkUpdateMonterOsn.Size = New System.Drawing.Size(261, 24)
-        Me.chkUpdateMonterOsn.TabIndex = 48
-        Me.chkUpdateMonterOsn.Text = "Monter osn. naloga, R končano"
-        Me.chkUpdateMonterOsn.UseVisualStyleBackColor = True
-        '
-        'cmdManualUpdateMonter
-        '
-        Me.cmdManualUpdateMonter.Image = Global.eProdService.My.Resources.Resources.yes
-        Me.cmdManualUpdateMonter.Location = New System.Drawing.Point(289, 272)
-        Me.cmdManualUpdateMonter.Name = "cmdManualUpdateMonter"
-        Me.cmdManualUpdateMonter.Size = New System.Drawing.Size(37, 33)
-        Me.cmdManualUpdateMonter.TabIndex = 49
-        Me.cmdManualUpdateMonter.UseVisualStyleBackColor = True
-        '
-        'lblNextMonter
-        '
-        Me.lblNextMonter.AutoSize = True
-        Me.lblNextMonter.ForeColor = System.Drawing.Color.Red
-        Me.lblNextMonter.Location = New System.Drawing.Point(631, 281)
-        Me.lblNextMonter.Name = "lblNextMonter"
-        Me.lblNextMonter.Size = New System.Drawing.Size(59, 20)
-        Me.lblNextMonter.TabIndex = 50
-        Me.lblNextMonter.Text = "Label1"
-        '
-        'lblNextSlikaVrtanja
-        '
-        Me.lblNextSlikaVrtanja.AutoSize = True
-        Me.lblNextSlikaVrtanja.ForeColor = System.Drawing.Color.Red
-        Me.lblNextSlikaVrtanja.Location = New System.Drawing.Point(631, 320)
-        Me.lblNextSlikaVrtanja.Name = "lblNextSlikaVrtanja"
-        Me.lblNextSlikaVrtanja.Size = New System.Drawing.Size(59, 20)
-        Me.lblNextSlikaVrtanja.TabIndex = 53
-        Me.lblNextSlikaVrtanja.Text = "Label1"
-        '
-        'cmdManualSlikaVrtanja
-        '
-        Me.cmdManualSlikaVrtanja.Image = Global.eProdService.My.Resources.Resources.yes
-        Me.cmdManualSlikaVrtanja.Location = New System.Drawing.Point(289, 311)
-        Me.cmdManualSlikaVrtanja.Name = "cmdManualSlikaVrtanja"
-        Me.cmdManualSlikaVrtanja.Size = New System.Drawing.Size(37, 33)
-        Me.cmdManualSlikaVrtanja.TabIndex = 52
-        Me.cmdManualSlikaVrtanja.UseVisualStyleBackColor = True
-        '
-        'chkEProdSlikaVrtanja
-        '
-        Me.chkEProdSlikaVrtanja.AutoSize = True
-        Me.chkEProdSlikaVrtanja.Location = New System.Drawing.Point(12, 320)
-        Me.chkEProdSlikaVrtanja.Name = "chkEProdSlikaVrtanja"
-        Me.chkEProdSlikaVrtanja.Size = New System.Drawing.Size(230, 24)
-        Me.chkEProdSlikaVrtanja.TabIndex = 51
-        Me.chkEProdSlikaVrtanja.Text = "Slika vrtanja, profil izvedba"
-        Me.chkEProdSlikaVrtanja.UseVisualStyleBackColor = True
-        '
-        'tmrMonter
-        '
-        Me.tmrMonter.Enabled = True
-        Me.tmrMonter.Interval = 60000
-        '
-        'tmrSlikaVrtanja
-        '
-        Me.tmrSlikaVrtanja.Enabled = True
-        Me.tmrSlikaVrtanja.Interval = 60000
-        '
-        'lblStart
-        '
-        Me.lblStart.AutoSize = True
-        Me.lblStart.Location = New System.Drawing.Point(495, 688)
-        Me.lblStart.Name = "lblStart"
-        Me.lblStart.Size = New System.Drawing.Size(0, 20)
-        Me.lblStart.TabIndex = 54
-        '
-        'chkKapaLog
-        '
-        Me.chkKapaLog.AutoSize = True
-        Me.chkKapaLog.Location = New System.Drawing.Point(12, 357)
-        Me.chkKapaLog.Name = "chkKapaLog"
-        Me.chkKapaLog.Size = New System.Drawing.Size(251, 24)
-        Me.chkKapaLog.TabIndex = 55
-        Me.chkKapaLog.Text = "Kapa logiranje, uvoz naslovov"
-        Me.chkKapaLog.UseVisualStyleBackColor = True
-        '
-        'btnManualKapaLog
-        '
-        Me.btnManualKapaLog.Image = Global.eProdService.My.Resources.Resources.yes
-        Me.btnManualKapaLog.Location = New System.Drawing.Point(289, 352)
-        Me.btnManualKapaLog.Name = "btnManualKapaLog"
-        Me.btnManualKapaLog.Size = New System.Drawing.Size(37, 33)
-        Me.btnManualKapaLog.TabIndex = 56
-        Me.btnManualKapaLog.UseVisualStyleBackColor = True
-        '
-        'lblNextKapaLog
-        '
-        Me.lblNextKapaLog.AutoSize = True
-        Me.lblNextKapaLog.ForeColor = System.Drawing.Color.Red
-        Me.lblNextKapaLog.Location = New System.Drawing.Point(631, 358)
-        Me.lblNextKapaLog.Name = "lblNextKapaLog"
-        Me.lblNextKapaLog.Size = New System.Drawing.Size(59, 20)
-        Me.lblNextKapaLog.TabIndex = 57
-        Me.lblNextKapaLog.Text = "Label1"
-        '
-        'tmrKapaLog
-        '
-        Me.tmrKapaLog.Enabled = True
-        Me.tmrKapaLog.Interval = 60000
-        '
-        'tmrSpica
-        '
-        Me.tmrSpica.Enabled = True
-        Me.tmrSpica.Interval = 60000
-        '
-        'chkSpicaEventUpdate
-        '
-        Me.chkSpicaEventUpdate.AutoSize = True
-        Me.chkSpicaEventUpdate.Location = New System.Drawing.Point(12, 396)
-        Me.chkSpicaEventUpdate.Name = "chkSpicaEventUpdate"
-        Me.chkSpicaEventUpdate.Size = New System.Drawing.Size(201, 24)
-        Me.chkSpicaEventUpdate.TabIndex = 59
-        Me.chkSpicaEventUpdate.Text = "Posodobi Špica evente"
-        Me.chkSpicaEventUpdate.UseVisualStyleBackColor = True
-        '
-        'cmdUpdateSpicaEvents
-        '
-        Me.cmdUpdateSpicaEvents.Image = Global.eProdService.My.Resources.Resources.yes
-        Me.cmdUpdateSpicaEvents.Location = New System.Drawing.Point(289, 391)
-        Me.cmdUpdateSpicaEvents.Name = "cmdUpdateSpicaEvents"
-        Me.cmdUpdateSpicaEvents.Size = New System.Drawing.Size(37, 33)
-        Me.cmdUpdateSpicaEvents.TabIndex = 60
-        Me.cmdUpdateSpicaEvents.UseVisualStyleBackColor = True
-        '
-        'lblSpicaMinutes
-        '
-        Me.lblSpicaMinutes.AutoSize = True
-        Me.lblSpicaMinutes.ForeColor = System.Drawing.Color.Red
-        Me.lblSpicaMinutes.Location = New System.Drawing.Point(631, 391)
-        Me.lblSpicaMinutes.Name = "lblSpicaMinutes"
-        Me.lblSpicaMinutes.Size = New System.Drawing.Size(59, 20)
-        Me.lblSpicaMinutes.TabIndex = 61
-        Me.lblSpicaMinutes.Text = "Label1"
-        '
-        'chkLockTechnicalOrders
-        '
-        Me.chkLockTechnicalOrders.AutoSize = True
-        Me.chkLockTechnicalOrders.Location = New System.Drawing.Point(12, 434)
-        Me.chkLockTechnicalOrders.Name = "chkLockTechnicalOrders"
-        Me.chkLockTechnicalOrders.Size = New System.Drawing.Size(277, 24)
-        Me.chkLockTechnicalOrders.TabIndex = 62
-        Me.chkLockTechnicalOrders.Text = "Zakleni tehnično obdelane naloge"
-        Me.chkLockTechnicalOrders.UseVisualStyleBackColor = True
-        '
-        'btnLockTechnicalOrders
-        '
-        Me.btnLockTechnicalOrders.Image = Global.eProdService.My.Resources.Resources.yes
-        Me.btnLockTechnicalOrders.Location = New System.Drawing.Point(289, 429)
-        Me.btnLockTechnicalOrders.Name = "btnLockTechnicalOrders"
-        Me.btnLockTechnicalOrders.Size = New System.Drawing.Size(37, 33)
-        Me.btnLockTechnicalOrders.TabIndex = 63
-        Me.btnLockTechnicalOrders.UseVisualStyleBackColor = True
-        '
-        'lblLockTechnicalOrders
-        '
-        Me.lblLockTechnicalOrders.AutoSize = True
-        Me.lblLockTechnicalOrders.ForeColor = System.Drawing.Color.Red
-        Me.lblLockTechnicalOrders.Location = New System.Drawing.Point(631, 429)
-        Me.lblLockTechnicalOrders.Name = "lblLockTechnicalOrders"
-        Me.lblLockTechnicalOrders.Size = New System.Drawing.Size(59, 20)
-        Me.lblLockTechnicalOrders.TabIndex = 64
-        Me.lblLockTechnicalOrders.Text = "Label1"
-        '
-        'tmrLockTechnicalOrders
-        '
-        Me.tmrLockTechnicalOrders.Enabled = True
-        Me.tmrLockTechnicalOrders.Interval = 60000
-        '
-        'cmdFirebase
-        '
-        Me.cmdFirebase.Location = New System.Drawing.Point(580, 685)
-        Me.cmdFirebase.Name = "cmdFirebase"
-        Me.cmdFirebase.Size = New System.Drawing.Size(121, 46)
-        Me.cmdFirebase.TabIndex = 65
-        Me.cmdFirebase.Text = "Firebase"
-        Me.cmdFirebase.UseVisualStyleBackColor = True
+        Me.Button1.Location = New System.Drawing.Point(465, 437)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(94, 59)
+        Me.Button1.TabIndex = 72
+        Me.Button1.Text = "Refresh Tracking"
+        Me.Button1.UseVisualStyleBackColor = True
         '
         'frmMainForm
         '
@@ -626,6 +703,13 @@ Partial Class frmMainForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(745, 740)
         Me.ContextMenuStrip = Me.ContextMenuStrip1
+        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.cmdImportTexts)
+        Me.Controls.Add(Me.cmdExportTexts)
+        Me.Controls.Add(Me.lblStatusNarocila)
+        Me.Controls.Add(Me.btnStatusNarocila)
+        Me.Controls.Add(Me.chkStatusNarocila)
+        Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.cmdFirebase)
         Me.Controls.Add(Me.lblLockTechnicalOrders)
         Me.Controls.Add(Me.btnLockTechnicalOrders)
@@ -746,5 +830,12 @@ Partial Class frmMainForm
     Friend WithEvents lblLockTechnicalOrders As System.Windows.Forms.Label
     Friend WithEvents tmrLockTechnicalOrders As System.Windows.Forms.Timer
     Friend WithEvents cmdFirebase As System.Windows.Forms.Button
-
+    Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents lblStatusNarocila As Label
+    Friend WithEvents btnStatusNarocila As Button
+    Friend WithEvents chkStatusNarocila As CheckBox
+    Friend WithEvents tmrStatusNarocila As Timer
+    Friend WithEvents cmdExportTexts As Button
+    Friend WithEvents cmdImportTexts As Button
+    Friend WithEvents Button1 As Button
 End Class

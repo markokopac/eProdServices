@@ -216,6 +216,24 @@ Module modLog
 
     End Sub
 
+    Public Sub AddToActionStatusNarocila(ByVal rchTB As RichTextBox, ByVal strLog As String)
+        Dim strLogNew As String
+        Dim strLogFile As String = cls.Config.ActionLogOrderStatus
+        Dim strActLog As String
+
+        strActLog = Application.StartupPath & "\Log\" & cls.Utils.RemoveFileExtension(strLogFile) & "_" & Format(Now.Date, "yyyy_MM_dd") & "." & cls.Utils.SamoFileExt(strLogFile)
+
+        strLogNew = Now.ToString & vbTab & strLog & vbCrLf
+
+        Dim objWriter As New System.IO.StreamWriter(strActLog, True)
+        objWriter.WriteLine(strLogNew)
+        objWriter.Close()
+
+        rchTB.AppendText(strLogNew)
+
+
+    End Sub
+
     Public Sub AddToActionUpdateImportGlass(ByVal rchTB As RichTextBox, ByVal strLog As String)
         Dim strLogNew As String
         Dim strLogFile As String = cls.Config.ImportGlassActionLog

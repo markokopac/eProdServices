@@ -28,5 +28,6 @@ Public Class clsGlobal
         event_task_assigned = 20
         event_glass_not_ordered = 21
         event_MAWI_subsequent_delivery = 22
+        event_google_order_created = 23
     End Enum
 End Class

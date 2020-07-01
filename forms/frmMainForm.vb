@@ -5,8 +5,10 @@ Imports eProdService.cls.msora.DB_MSora
 Imports System.Data.OleDb
 Imports MySql.Data.MySqlClient
 Imports System.IO
-Imports FireSharp
-
+Imports FireSharp.Config
+Imports FireSharp.Response
+Imports FireSharp.Interfaces
+Imports Google.Cloud.Firestore
 
 Public Class frmMainForm
 
@@ -23,6 +25,7 @@ Public Class frmMainForm
     Dim intKapaLogMinutes As Integer
     Dim intSlikaVrtanjaMinutes As Integer
     Dim intTechnicalLockMinutes As Integer
+    Dim intMSORAOrderStatusMinutes As Integer
 
     Dim intSpicaEventsMinutes As Integer
 
@@ -73,7 +76,16 @@ Public Class frmMainForm
     Dim dtmEndTimeSlikaVrtanja As Date
     Dim strDaysUpdateSlikaVrtanja As String
 
+    Dim dtmStartTimeOrderStatus As Date
+    Dim dtmEndTimeOrderStatus As Date
+    Dim strDaysUpdateOrderStatus As String
 
+    Private fbclient As IFirebaseClient
+    Private ifc As New FirebaseConfig
+
+    Private blnFireBase As Boolean = True
+
+    Dim i As Integer = 1
 
 
     Private Sub frmMainForm_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
@@ -117,128 +129,153 @@ Public Class frmMainForm
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
+        Try
 
-        If Environment.GetCommandLineArgs().Length > 1 Then
-            cls.Config.iniFile = New cIni(Environment.GetCommandLineArgs(1))
-        Else
-            cls.Config.iniFile = New cIni("./eProdService.ini")
-        End If
+            If Environment.GetCommandLineArgs().Length > 1 Then
+                cls.Config.iniFile = New cIni(Environment.GetCommandLineArgs(1))
+            Else
+                cls.Config.iniFile = New cIni("./eProdService.ini")
+            End If
 
-        Me.chkAutoStartName.Checked = cls.Config.AutoStartName
-        Me.chkAutoSendMailing.Checked = cls.Config.AutoStartMailinig
-        Me.chkAutoChangeDeliveryDate.Checked = cls.Config.AutoStartDeliveryDate
-        Me.chkAutoMAWIDates.Checked = cls.Config.AutoStartMAWIDate
-        Me.chkAutoCutterSendFile.Checked = cls.Config.AutoStartCutterFile
-        Me.chkAutoCheckCutterArchive.Checked = cls.Config.AutoStartCutterArchive
-        Me.chkUpdateSklic.Checked = cls.Config.AutoStartSklic
-        Me.chkUpdateMonterOsn.Checked = cls.Config.AutoStartMonter
-        Me.chkEProdSlikaVrtanja.Checked = cls.Config.AutoStartSlikaVrtanja
-        Me.chkKapaLog.Checked = cls.Config.AutoStartKapaLog
-        Me.chkSpicaEventUpdate.Checked = cls.Config.AutoStartKapaLog
-        Me.chkLockTechnicalOrders.Checked = cls.Config.AutoStartTechnicalLock
+            Me.chkAutoStartName.Checked = cls.Config.AutoStartName
+            Me.chkAutoSendMailing.Checked = cls.Config.AutoStartMailinig
+            Me.chkAutoChangeDeliveryDate.Checked = cls.Config.AutoStartDeliveryDate
+            Me.chkAutoMAWIDates.Checked = cls.Config.AutoStartMAWIDate
+            Me.chkAutoCutterSendFile.Checked = cls.Config.AutoStartCutterFile
+            Me.chkAutoCheckCutterArchive.Checked = cls.Config.AutoStartCutterArchive
+            Me.chkUpdateSklic.Checked = cls.Config.AutoStartSklic
+            Me.chkUpdateMonterOsn.Checked = cls.Config.AutoStartMonter
+            Me.chkEProdSlikaVrtanja.Checked = cls.Config.AutoStartSlikaVrtanja
+            Me.chkKapaLog.Checked = cls.Config.AutoStartKapaLog
+            Me.chkSpicaEventUpdate.Checked = cls.Config.AutoStartKapaLog
+            Me.chkLockTechnicalOrders.Checked = cls.Config.AutoStartTechnicalLock
+            Me.chkStatusNarocila.Checked = cls.Config.AutoStartOrderStatus
 
-        Me.tmrUpdateName.Interval = 60000
-        Me.tmrSendMail.Interval = 60000
-        Me.tmrDeliveryDate.Interval = 60000
-        Me.tmrMAWIDates.Interval = 60000
-        Me.tmrCutterSendFile.Interval = 60000
-        Me.tmrCutterArchive.Interval = 60000
-        Me.tmrSklic.Interval = 60000
-        Me.tmrMonter.Interval = 60000
-        Me.tmrSlikaVrtanja.Interval = 60000
-        Me.tmrSpica.Interval = 60000
-        Me.tmrLockTechnicalOrders.Interval = 60000
+            Me.tmrUpdateName.Interval = 60000
+            Me.tmrSendMail.Interval = 60000
+            Me.tmrDeliveryDate.Interval = 60000
+            Me.tmrMAWIDates.Interval = 60000
+            Me.tmrCutterSendFile.Interval = 60000
+            Me.tmrCutterArchive.Interval = 60000
+            Me.tmrSklic.Interval = 60000
+            Me.tmrMonter.Interval = 60000
+            Me.tmrSlikaVrtanja.Interval = 60000
+            Me.tmrSpica.Interval = 60000
+            Me.tmrLockTechnicalOrders.Interval = 60000
+            Me.tmrStatusNarocila.Interval = 60000
+
+            Call AddToActionLogSendMail("Application started")
+            Call AddToActionLogUpdateName("Application started")
+
+            intUpdateMinutes = cls.Config.GetUpdateNameCheckInterval
+            lblNextUpdateName.Text = intUpdateMinutes
+
+            intMailingMinutes = cls.Config.GetSendMailCheckInterval
+            lblNextUpdateMail.Text = intMailingMinutes
+
+            intDeliveryDateMinutes = cls.Config.GetDeliveryDateCheckInterval
+            lblNextUpdateDeliveryDate.Text = intDeliveryDateMinutes
+
+            intMAWIDateMinutes = cls.Config.GetMawiDateCheckInterval
+            lblNextUpdateMAWIDates.Text = intMAWIDateMinutes
+
+            intCutterSendFileMinutes = cls.Config.GetCutterSendFileCheckInterval
+            lblNextUpdateCutterSendFile.Text = intCutterSendFileMinutes
+
+            intCutterArchiveMinutes = cls.Config.GetCutterArchiveCheckInterval
+            lblNextUpdateCutterArchive.Text = intCutterArchiveMinutes
+
+            intSklicMinutes = cls.Config.GetSklicUpdateInterval
+            lblNextSklic.Text = intSklicMinutes
+
+            intTechnicalLockMinutes = cls.Config.GetTechnicalLockUpdateInterval
+            lblLockTechnicalOrders.Text = intTechnicalLockMinutes
+
+            dtmStartTimeUpdateName = cls.Config.GetUpdateNameStartTime
+            dtmEndTimeUpdateName = cls.Config.GetUpdateNameEndTime
+            strDaysUpdateName = cls.Config.GetUpdateNameDays
+
+            dtmStartTimeSendMail = cls.Config.GetSendMailStartTime
+            dtmEndTimeSendMail = cls.Config.GetSendMailEndTime
+            strDaysSendMail = cls.Config.GetSendMailDays
+
+            dtmStartTimeDeliveryDate = cls.Config.GetDeliveryDateStartTime
+            dtmEndTimeDeliveryDate = cls.Config.GetDeliveryDateEndTime
+            strDaysDeliveryDate = cls.Config.GetDeliveryDateDays
+
+            dtmStartTimeMawiDate = cls.Config.GetMawiDateStartTime
+            dtmEndTimeMawiDate = cls.Config.GetMawiDateEndTime
+            strDaysMawiDate = cls.Config.GetMawiDateDays
+
+            dtmStartTimeCutterSendFile = cls.Config.GetCutterSendFileStartTime
+            dtmEndTimeCutterSendFile = cls.Config.GetCutterSendFileEndTime
+            strDaysCutterSendFile = cls.Config.GetCutterSendFileDays
+
+            dtmStartTimeCutterArchive = cls.Config.GetCutterArchiveStartTime
+            dtmEndTimeCutterArchive = cls.Config.GetCutterArchiveEndTime
+            strDaysCutterArchive = cls.Config.GetCutterArchiveDays
+
+            dtmStartTimeSklic = cls.Config.GetSklicStartTime
+            dtmEndTimeSklic = cls.Config.GetSklicEndTime
+            strDaysUpdateSklic = cls.Config.GetSklicDays
+
+            dtmStartTimeRkoncano = cls.Config.GetRKoncanoStartTime
+            dtmEndTimeRkoncano = cls.Config.GetRkoncanoEndTime
+            strDaysUpdateRKoncano = cls.Config.GetRkoncanoDays
 
 
-        Call AddToActionLogSendMail("Application started")
-        Call AddToActionLogUpdateName("Application started")
+            dtmStartTimeMonter = cls.Config.GetMonterStartTime
+            dtmEndTimeMonter = cls.Config.GetMonterEndTime
+            strDaysUpdateMonter = cls.Config.GetMonterDays
 
-        intUpdateMinutes = cls.Config.GetUpdateNameCheckInterval
-        lblNextUpdateName.Text = intUpdateMinutes
+            intMonterMinutes = cls.Config.GetmonterUpdateInterval
+            lblNextMonter.Text = intMonterMinutes
 
-        intMailingMinutes = cls.Config.GetSendMailCheckInterval
-        lblNextUpdateMail.Text = intMailingMinutes
+            dtmStartTimeKapaLog = cls.Config.GetKapaLogStartTime
+            dtmEndTimeKapaLog = cls.Config.GetKapaLogEndTime
+            strDaysUpdateKapaLog = cls.Config.GetKapaLogDays
 
-        intDeliveryDateMinutes = cls.Config.GetDeliveryDateCheckInterval
-        lblNextUpdateDeliveryDate.Text = intDeliveryDateMinutes
+            intKapaLogMinutes = cls.Config.GetKapaLogUpdateInterval
+            lblNextKapaLog.Text = intKapaLogMinutes
 
-        intMAWIDateMinutes = cls.Config.GetMawiDateCheckInterval
-        lblNextUpdateMAWIDates.Text = intMAWIDateMinutes
+            intSpicaEventsMinutes = cls.Config.GetSpicaEventUpdateInterval
+            lblSpicaMinutes.Text = intSpicaEventsMinutes
 
-        intCutterSendFileMinutes = cls.Config.GetCutterSendFileCheckInterval
-        lblNextUpdateCutterSendFile.Text = intCutterSendFileMinutes
-
-        intCutterArchiveMinutes = cls.Config.GetCutterArchiveCheckInterval
-        lblNextUpdateCutterArchive.Text = intCutterArchiveMinutes
-
-        intSklicMinutes = cls.Config.GetSklicUpdateInterval
-        lblNextSklic.Text = intSklicMinutes
-
-        intTechnicalLockMinutes = cls.Config.GetTechnicalLockUpdateInterval
-        lblLockTechnicalOrders.Text = intTechnicalLockMinutes
-
-        dtmStartTimeUpdateName = cls.Config.GetUpdateNameStartTime
-        dtmEndTimeUpdateName = cls.Config.GetUpdateNameEndTime
-        strDaysUpdateName = cls.Config.GetUpdateNameDays
-
-        dtmStartTimeSendMail = cls.Config.GetSendMailStartTime
-        dtmEndTimeSendMail = cls.Config.GetSendMailEndTime
-        strDaysSendMail = cls.Config.GetSendMailDays
-
-        dtmStartTimeDeliveryDate = cls.Config.GetDeliveryDateStartTime
-        dtmEndTimeDeliveryDate = cls.Config.GetDeliveryDateEndTime
-        strDaysDeliveryDate = cls.Config.GetDeliveryDateDays
-
-        dtmStartTimeMawiDate = cls.Config.GetMawiDateStartTime
-        dtmEndTimeMawiDate = cls.Config.GetMawiDateEndTime
-        strDaysMawiDate = cls.Config.GetMawiDateDays
-
-        dtmStartTimeCutterSendFile = cls.Config.GetCutterSendFileStartTime
-        dtmEndTimeCutterSendFile = cls.Config.GetCutterSendFileEndTime
-        strDaysCutterSendFile = cls.Config.GetCutterSendFileDays
-
-        dtmStartTimeCutterArchive = cls.Config.GetCutterArchiveStartTime
-        dtmEndTimeCutterArchive = cls.Config.GetCutterArchiveEndTime
-        strDaysCutterArchive = cls.Config.GetCutterArchiveDays
-
-        dtmStartTimeSklic = cls.Config.GetSklicStartTime
-        dtmEndTimeSklic = cls.Config.GetSklicEndTime
-        strDaysUpdateSklic = cls.Config.GetSklicDays
-
-        dtmStartTimeRkoncano = cls.Config.GetRKoncanoStartTime
-        dtmEndTimeRkoncano = cls.Config.GetRkoncanoEndTime
-        strDaysUpdateRKoncano = cls.Config.GetRkoncanoDays
+            intMSORAOrderStatusMinutes = cls.Config.GetStatusNarocilaInterval
+            lblStatusNarocila.Text = intMSORAOrderStatusMinutes
 
 
-        dtmStartTimeMonter = cls.Config.GetMonterStartTime
-        dtmEndTimeMonter = cls.Config.GetMonterEndTime
-        strDaysUpdateMonter = cls.Config.GetMonterDays
-        intMonterMinutes = cls.Config.GetmonterUpdateInterval
-        lblNextMonter.Text = intMonterMinutes
+            dtmStartTimeSlikaVrtanja = cls.Config.GetSlikaVrtanjaStartTime
+            dtmEndTimeSlikaVrtanja = cls.Config.GetSlikaVrtanjaEndTime
+            strDaysUpdateSlikaVrtanja = cls.Config.GetSlikaVrtanjaDays
+            intSlikaVrtanjaMinutes = cls.Config.GetSlikaVrtanjaUpdateInterval
+            lblNextSlikaVrtanja.Text = intSlikaVrtanjaMinutes
 
-        dtmStartTimeKapaLog = cls.Config.GetKapaLogStartTime
-        dtmEndTimeKapaLog = cls.Config.GetKapaLogEndTime
-        strDaysUpdateKapaLog = cls.Config.GetKapaLogDays
 
-        intKapaLogMinutes = cls.Config.GetKapaLogUpdateInterval
-        lblNextKapaLog.Text = intKapaLogMinutes
+            dtmStartTimeOrderStatus = cls.Config.GetOrderStatusStartTime
+            dtmEndTimeOrderStatus = cls.Config.GetOrderStatusEndTime
+            strDaysUpdateOrderStatus = cls.Config.GetOrderStatusDays
 
-        intSpicaEventsMinutes = cls.Config.GetSpicaEventUpdateInterval
-        lblSpicaMinutes.Text = intSpicaEventsMinutes
+            gConnEProd = GetMyConnection("eprod")
 
-        dtmStartTimeSlikaVrtanja = cls.Config.GetSlikaVrtanjaStartTime
-        dtmEndTimeSlikaVrtanja = cls.Config.GetSlikaVrtanjaEndTime
-        strDaysUpdateSlikaVrtanja = cls.Config.GetSlikaVrtanjaDays
-        intSlikaVrtanjaMinutes = cls.Config.GetSlikaVrtanjaUpdateInterval
-        lblNextSlikaVrtanja.Text = intSlikaVrtanjaMinutes
+            Me.lblStart.Text = Now.ToString
 
-        gConnEProd = GetMyConnection("eprod")
+            If cls.Config.RunAtStart Then
+                Call RunAll()
+            End If
 
-        Me.lblStart.Text = Now.ToString
+            cls.Config.mstr_TOOLSName = cls.Config.ToolsDatabaseName
 
-        If cls.Config.RunAtStart Then
-            Call RunAll()
-        End If
+            ifc.AuthSecret = cls.Config.FirebaseAuthSecret
+            ifc.BasePath = cls.Config.FirebaseBasePath
+
+
+            fbclient = New FireSharp.FirebaseClient(ifc)
+            blnFireBase = True
+        Catch
+            blnFireBase = False
+            MsgBox("Težava z internetom!")
+        End Try
 
     End Sub
 
@@ -736,6 +773,7 @@ Public Class frmMainForm
 
         End Try
     End Sub
+
 
     Public Sub AutoProcessTechnicalLocks()
         Dim dtmStart As Date
@@ -2281,8 +2319,480 @@ Public Class frmMainForm
         Call AutoProcessTechnicalLocks()
     End Sub
 
-    Private Sub cmdFirebase_Click(sender As System.Object, e As System.EventArgs) Handles cmdFirebase.Click
 
+    Private Sub tmrStatusNarocila_Tick(sender As Object, e As EventArgs) Handles tmrStatusNarocila.Tick
+
+        Dim dtmTime As Date
+        Dim intDayOfWeek As Integer
+
+
+        intMSORAOrderStatusMinutes = intMSORAOrderStatusMinutes - 1
+
+        Me.lblStatusNarocila.Text = intMSORAOrderStatusMinutes
+
+        If intMSORAOrderStatusMinutes <= 0 Then
+
+            dtmTime = Format(Now, TimeOfDay)
+            intDayOfWeek = Now.Date.DayOfWeek
+
+            If dtmTime >= dtmStartTimeOrderStatus And dtmTime <= dtmEndTimeOrderStatus And strDaysUpdateOrderStatus.Contains(intDayOfWeek.ToString) Then
+
+                If Me.chkStatusNarocila.Checked Then
+                    ClearLog()
+                    Call AutoProcessOrderStatus("")
+                End If
+            End If
+
+            intMSORAOrderStatusMinutes = cls.Config.GetStatusNarocilaInterval
+        End If
+    End Sub
+
+    Private Sub btnStatusNarocila_Click(sender As Object, e As EventArgs) Handles btnStatusNarocila.Click
+        txtLog.Clear()
+        Dim strDatum As String = InputBox("Vpiši datum, od katerega dalje naj se posodobijo podatki!")
+        Call AutoProcessOrderStatus(strDatum)
+    End Sub
+
+
+    Public Sub AutoProcessOrderStatus(strDatum As String)
+        Dim strSQL As String = ""
+        Dim dtmStart As Date
+        Dim dtmEnd As Date = Now.Date
+        Dim strOrderNrT As String = ""
+        Dim strOrderNrN As String = ""
+        Dim strProjectNr As String = ""
+        Dim dtmDatum As Date
+
+
+
+        Call AddToActionStatusNarocila(Me.txtLog, "Začetek - AutoProcessOrderStatus")
+
+        'Status potrditve
+        If strDatum = "" Then
+            dtmStart = DateAdd(DateInterval.Day, cls.Config.GetOrderStatusCheckDaysBack1 * -1, Now.Date)
+        Else
+            If IsValidDate(strDatum) Then
+                dtmStart = CDate(strDatum).Date
+            Else
+                MsgBox("Invalid date format " & strDatum & "!")
+                Exit Sub
+            End If
+        End If
+
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Odprto T naročilo (status potrditve - status_date_1) od datuma - " & dtmStart)
+
+        Using connKBS As SqlConnection = GetConnection("KLAES")
+            Using connTools As SqlConnection = GetConnection("TOOLS")
+                'najprej poiščem vsa naročila, ki so imela odprta T naročilo
+                strSQL = "SELECT bsx_belegnr, bsx_erfdatum FROM VKBELEGSTUB WHERE bsx_erfdatum >= @dtmStart AND bsx_belegnr LIKE 'T%' AND bsx_ibelegart = 20"
+
+                Using cmd As New SqlCommand(strSQL, connKBS)
+                    cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                    Dim dt As DataTable = GetData(cmd)
+                    For i = 0 To dt.Rows.Count - 1
+                        strOrderNrT = dt.Rows(i)("bsx_belegnr").ToString.Trim
+                        strOrderNrN = "N" + Mid(strOrderNrT, 2).Trim
+                        dtmDatum = CDate(dt.Rows(i)("bsx_erfdatum")).Date
+
+                        If UpdateMSoraOrderStatusDate1(strOrderNrN, dtmDatum, connKBS, connTools) Then
+                            Call AddToActionStatusNarocila(Me.txtLog, strOrderNrT & "/" & strOrderNrN & vbTab & dtmDatum & vbTab & "OK" & vbCrLf)
+                        End If
+                    Next
+                End Using
+            End Using
+        End Using
+
+
+        'tukaj preverim še, če so narejene vse podmape
+        'Tlorisi
+        'Izmere
+        'Slike
+        'Montaza
+
+        Dim intCreateFolders As Integer = cls.Config.CreateFolders
+
+        If intCreateFolders > 0 Then
+            Dim strLeta As String = cls.Config.GetLeta
+            Dim aLeta() As String = strLeta.Split(",".ToCharArray)
+            Dim strFolders As String = cls.Config.FolderNames
+            Dim aFolders() As String = strFolders.Split(",".ToCharArray)
+            Dim strFolder As String = ""
+            Dim strProjectPath As String = cls.Config.GetMapaArhiv
+            Dim strFolderPath As String = ""
+            Using connKBS As SqlConnection = GetConnection("KLAES")
+                'najprej poiščem vse projekte, katerim je bila dodana ponudba ali narocilo
+                strSQL = "SELECT distinct bsx_vorgangnr FROM VKBELEGSTUB WHERE bsx_erfdatum >= @dtmStart AND bsx_ibelegart IN (10, 20)"
+
+
+                Using cmd As New SqlCommand(strSQL, connKBS)
+                    cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                    Dim dt As DataTable = GetData(cmd)
+                    For i = 0 To dt.Rows.Count - 1
+                        strProjectNr = dt.Rows(i)("bsx_vorgangnr").ToString.Trim
+
+                        For j = 0 To aLeta.Length - 1
+                            If InStr(strProjectNr, aLeta(j) & "-") > 0 Then
+                                strFolder = strProjectPath & "leto " & aLeta(j) & "\" & strProjectNr
+                                If IO.Directory.Exists(strFolder) Then
+                                    For z = 0 To aFolders.Length - 1
+                                        strFolderPath = strFolder & "\" & aFolders(z).Trim
+                                        If Not IO.Directory.Exists(strFolderPath) Then
+                                            'kreiram 
+                                            IO.Directory.CreateDirectory(strFolderPath)
+                                            Call AddToActionStatusNarocila(Me.txtLog, "Kreirana mapa " & strFolderPath)
+
+                                        End If
+                                    Next
+
+                                    Exit For
+                                End If
+
+                            End If
+                        Next
+
+                    Next
+                End Using
+            End Using
+        End If
+
+
+        'Priprava na tehnično obdelavo - konec (ko tehnolog zaklene naročilo - tiskanje N-ja v originalu)
+        If strDatum = "" Then
+            dtmStart = DateAdd(DateInterval.Day, cls.Config.GetOrderStatusCheckDaysBack2 * -1, Now.Date)
+        Else
+            If IsValidDate(strDatum) Then
+                dtmStart = CDate(strDatum).Date
+            Else
+                MsgBox("Invalid date format " & strDatum & "!")
+                Exit Sub
+            End If
+        End If
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Priprava na tehnično obdelavo - konec  (status_date_2E - datum tiska v originalu) od datuma - " & dtmStart)
+
+        Using connKBS As SqlConnection = GetConnection("KLAES")
+            Using connTools As SqlConnection = GetConnection("TOOLS")
+                '
+                strSQL = "SELECT bsx_belegnr, bsx_druckdatum FROM VKBELEGSTUB WHERE bsx_druckdatum BETWEEN @dtmStart AND @dtmEnd AND bsx_belegnr LIKE 'N%' AND bsx_ibelegart = 20 AND bsx_idruckstatus = 1"
+
+                Using cmd As New SqlCommand(strSQL, connKBS)
+                    cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                    cmd.Parameters.AddWithValue("@dtmEnd", dtmEnd)
+                    Dim dt As DataTable = GetData(cmd)
+                    For i = 0 To dt.Rows.Count - 1
+                        strOrderNrN = dt.Rows(i)("bsx_belegnr").ToString
+
+                        dtmDatum = CDate(dt.Rows(i)("bsx_druckdatum")).Date
+
+                        If UpdateMSoraOrderInfo_Status_Date_2E(connTools, connKBS, strOrderNrN, dtmDatum) Then
+                            Call AddToActionStatusNarocila(Me.txtLog, strOrderNrN & vbTab & dtmDatum & vbTab & "OK" & vbCrLf)
+
+                        End If
+                    Next
+                End Using
+            End Using
+        End Using
+
+        'Naročilo tehnično obdelano - konec
+        If strDatum = "" Then
+            dtmStart = DateAdd(DateInterval.Day, cls.Config.GetOrderStatusCheckDaysBack3 * -1, Now.Date)
+        Else
+            If IsValidDate(strDatum) Then
+                dtmStart = CDate(strDatum).Date
+            Else
+                MsgBox("Invalid date format " & strDatum & "!")
+                Exit Sub
+            End If
+        End If
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Naročilo tehnično obdelano (konec - status_date_E3 - bsx_0_datum_datumtehnicnoobdelano) od datuma - " & dtmStart)
+
+        Using connKBS As SqlConnection = GetConnection("KLAES")
+            Using connTools As SqlConnection = GetConnection("TOOLS")
+                '
+                strSQL = "SELECT bsx_belegnr, bsx_0_datum_datumtehnicnoobdelano FROM VKBELEGSTUB WHERE bsx_0_datum_datumtehnicnoobdelano BETWEEN @dtmStart AND @dtmEnd AND bsx_belegnr LIKE 'N%' AND bsx_ibelegart = 20 AND bsx_idruckstatus = 1"
+
+                Using cmd As New SqlCommand(strSQL, connKBS)
+                    cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                    cmd.Parameters.AddWithValue("@dtmEnd", dtmEnd)
+                    Dim dt As DataTable = GetData(cmd)
+                    For i = 0 To dt.Rows.Count - 1
+                        strOrderNrN = dt.Rows(i)("bsx_belegnr").ToString
+
+                        dtmDatum = CDate(dt.Rows(i)("bsx_0_datum_datumtehnicnoobdelano")).Date
+
+                        If UpdateMSoraOrderInfo_Status_Date_3E(connTools, strOrderNrN, dtmDatum) Then
+                            Call AddToActionStatusNarocila(Me.txtLog, strOrderNrN & vbTab & dtmDatum & vbTab & "OK" & vbCrLf)
+
+                        End If
+                    Next
+                End Using
+            End Using
+        End Using
+
+
+        'Pridobivanje materiala - konec
+        If strDatum = "" Then
+            dtmStart = DateAdd(DateInterval.Day, cls.Config.GetOrderStatusCheckDaysBack4 * -1, Now.Date)
+        Else
+            If IsValidDate(strDatum) Then
+                dtmStart = CDate(strDatum).Date
+            Else
+                MsgBox("Invalid date format " & strDatum & "!")
+                Exit Sub
+            End If
+        End If
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Pridobivanje materiala (konec - status_date_4E - vsa naročila MAWI imajo status dobave = dobavljeno) od datuma - " & dtmStart)
+
+        Using connMAWI As SqlConnection = GetConnection("MAWI")
+            Using connTools As SqlConnection = GetConnection("TOOLS")
+                '
+                strSQL = "SELECT c.name, c.calculation_date, min(de.date) as first_delivery_date, max(de.date) as last_delivery_date " _
+                    & " FROM [order] o " _
+                    & " INNER JOIN order_details od ON od.id_order = o.id_order " _
+                    & " INNER JOIN used u ON u.id_order = o.id_order " _
+                    & " INNER JOIN contract c ON c.id_contract = u.id_contract " _
+                    & " LEFT JOIN delivery de ON de.id_delivery = u.id_delivery " _
+                    & " WHERE u.id_order > 0 " _
+                    & " AND o.id_order_type IN (4) " _
+                    & " AND c.calculation_date >= @dtmStart " _
+                    & " GROUP BY c.name,  c.calculation_date " _
+                    & " HAVING max(c.id_delivery_state) >= 1 AND min(de.date) > c.calculation_date " _
+                    & " ORDER BY c.name "
+
+                Using cmd As New SqlCommand(strSQL, connMAWI)
+                    cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                    Dim dt As DataTable = GetData(cmd)
+
+                    strOrderNrT = ""
+                    strOrderNrN = ""
+                    Dim intStatus As Integer = 0
+                    Dim blnUpdate As Boolean = False
+                    For i = 0 To dt.Rows.Count - 1
+
+                        strOrderNrT = dt.Rows(i)("name").ToString
+                        strOrderNrN = "N" + Mid(strOrderNrT, 2)
+
+                        'poiščem še zadnji datum potrditve, dobave
+
+                        dtmDatum = CDate(dt.Rows(i)("last_delivery_date")).Date
+
+                        If UpdateMSoraOrderInfo_Status_Date_4E(connTools, strOrderNrN, dtmDatum) Then
+                            Call AddToActionStatusNarocila(Me.txtLog, strOrderNrT & "/" & strOrderNrN & vbTab & dtmDatum & vbTab & "OK" & vbCrLf)
+                        End If
+                    Next
+                End Using
+            End Using
+        End Using
+
+
+        'Proizvodnja - začetek
+        If strDatum = "" Then
+            dtmStart = DateAdd(DateInterval.Day, cls.Config.GetOrderStatusCheckDaysBack5 * -1, Now.Date)
+        Else
+            If IsValidDate(strDatum) Then
+                dtmStart = CDate(strDatum).Date
+            Else
+                MsgBox("Invalid date format " & strDatum & "!")
+                Exit Sub
+            End If
+        End If
+
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Začetek proizvodnje (status_date_51 - prvo knjiženje v proizvodnji) od datuma - " & dtmStart)
+
+        Using connTools As SqlConnection = GetConnection("TOOLS")
+            '
+            strSQL = "SELECT A.Auftragsnummer, " _
+                    & " min(KIZ.buchdatum) as startdate " _
+                    & " FROM Zustand Z, Auftrag A, klaes_pf_istzeiten KIZ  " _
+                    & " WHERE Z.kommissionsnummer = A.kommissionsnummer " _
+                    & " AND Z.kommissionsnummer = KIZ.kommissionsnummer " _
+                    & " AND KIZ.buchdatum >= @dtmStart " _
+                    & " AND Z.positionsnummer = 0 and z.anzahlteile > Z.nummerrueckmeldung " _
+                    & " GROUP BY A.Auftragsnummer"
+
+            Using cmd As New MySqlCommand(strSQL, gConnEProd)
+                cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                Dim dt As DataTable = GetMyData(cmd)
+                For i = 0 To dt.Rows.Count - 1
+                    strOrderNrT = dt.Rows(i)("Auftragsnummer").ToString
+                    strOrderNrN = "N" + Mid(strOrderNrT, 2)
+
+                    'poiščem še zadnji datum potrditve, dobave
+
+                    dtmDatum = CDate(dt.Rows(i)("startdate")).Date
+
+                    If UpdateMSoraOrderInfo_Status_Date_51(connTools, strOrderNrN, dtmDatum) Then
+                        Call AddToActionStatusNarocila(Me.txtLog, strOrderNrT & "/" & strOrderNrN & vbTab & dtmDatum & vbTab& & "OK" & vbCrLf)
+                    End If
+                Next
+            End Using
+        End Using
+
+        'Stiskalnica - začetek
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Začeto na stiskalnici (status_date_52 - prvo knjiženje na stiskalnici) od datuma - " & dtmStart)
+
+        Using connTools As SqlConnection = GetConnection("TOOLS")
+            '
+            strSQL = "SELECT A.Auftragsnummer, " _
+                    & " min(KIZ.buchdatum) as startdate " _
+                    & " FROM Zustand Z, Auftrag A, klaes_pf_istzeiten KIZ  " _
+                    & " WHERE Z.kommissionsnummer = A.kommissionsnummer " _
+                    & " AND Z.kommissionsnummer = KIZ.kommissionsnummer " _
+                    & " AND KIZ.buchdatum >= @dtmStart " _
+                    & " AND Z.positionsnummer = 0 and z.anzahlteile > Z.nummerrueckmeldung " _
+                    & " AND KIZ.platznummerpf = 6 " _
+                    & " GROUP BY A.Auftragsnummer"
+
+            Using cmd As New MySqlCommand(strSQL, gConnEProd)
+                cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                Dim dt As DataTable = GetMyData(cmd)
+                For i = 0 To dt.Rows.Count - 1
+                    strOrderNrT = dt.Rows(i)("Auftragsnummer").ToString
+                    strOrderNrN = "N" + Mid(strOrderNrT, 2)
+
+
+                    dtmDatum = CDate(dt.Rows(i)("startdate")).Date
+
+                    If UpdateMSoraOrderInfo_Status_Date_52(connTools, strOrderNrN, dtmDatum) Then
+                        Call AddToActionStatusNarocila(Me.txtLog, strOrderNrT & "/" & strOrderNrN & vbTab & dtmDatum & vbTab& & "OK" & vbCrLf)
+                    End If
+                Next
+            End Using
+        End Using
+
+
+        'Proizvodnja - konec
+        Call AddToActionStatusNarocila(Me.txtLog, "***** konec proizvodnje (status_date_53 - zadnje knjiženje v proizvodnji (KK = 100%)) od datuma - " & dtmStart)
+
+
+        Using connTools As SqlConnection = GetConnection("TOOLS")
+            '
+            strSQL = "SELECT a1.Auftragsnummer, max(date(from_unixtime(substring(Z1.buchzeit,1,10)))) as lastdate " _
+                & " FROM auftrag a1, zustand z1 " _
+                & " WHERE a1.kommissionsnummer = z1.kommissionsnummer AND Date(from_unixtime(Substring(z1.buchzeit,1,10))) >= @dtmStart " _
+                & " AND z1.kostenstelle = 11 AND z1.positionsnummer = 0 " _
+                & " GROUP BY a1.auftragsnummer " _
+                & " HAVING MIN(z1.status) = 100 " _
+                & " ORDER BY max(date(from_unixtime(substring(Z1.buchzeit,1,10))))"
+
+
+            Using cmd As New MySqlCommand(strSQL, gConnEProd)
+                cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                Dim dt As DataTable = GetMyData(cmd)
+                For i = 0 To dt.Rows.Count - 1
+                    strOrderNrT = dt.Rows(i)("Auftragsnummer").ToString
+                    strOrderNrN = "N" + Mid(strOrderNrT, 2)
+
+                    'poiščem še zadnji datum potrditve, dobave
+
+                    dtmDatum = CDate(dt.Rows(i)("lastdate")).Date
+
+                    If UpdateMSoraOrderInfo_Status_Date_53(connTools, strOrderNrN, dtmDatum) Then
+                        Call AddToActionStatusNarocila(Me.txtLog, strOrderNrT & "/" & strOrderNrN & vbTab & dtmDatum & vbTab & "OK" & vbCrLf)
+                    End If
+                Next
+            End Using
+        End Using
+
+        'Montaža - začetek
+        If strDatum = "" Then
+            dtmStart = DateAdd(DateInterval.Day, cls.Config.GetOrderStatusCheckDaysBack6 * -1, Now.Date)
+        Else
+            If IsValidDate(strDatum) Then
+                dtmStart = CDate(strDatum).Date
+            Else
+                MsgBox("Invalid date format " & strDatum & "!")
+                Exit Sub
+            End If
+        End If
+        Call AddToActionStatusNarocila(Me.txtLog, "***** Začetek montaže (status_date_6 - začetek zadnja montaža) od datuma - " & dtmStart)
+
+
+        Using connTools As SqlConnection = GetConnection("TOOLS")
+            '
+            strSQL = "SELECT m.main_order_nr, m.status, MIN(m.montage_date) as mdate " _
+                                   & " FROM montage m " _
+                                   & " WHERE m.montage_date >= @dtmStart " _
+                                   & " GROUP BY m.main_order_nr, m.status " _
+                                   & " ORDER BY m.main_order_nr, MIN(m.montage_date) "
+
+            Using cmd As New SqlCommand(strSQL, connTools)
+                cmd.Parameters.AddWithValue("@dtmStart", dtmStart)
+                Dim dt As DataTable = GetData(cmd)
+                strOrderNrN = ""
+                For i = 0 To dt.Rows.Count - 1
+                    If dt.Rows(i)("main_order_nr").ToString.Trim <> strOrderNrN.Trim Then
+                        strOrderNrN = dt.Rows(i)("main_order_nr").ToString.Trim
+                        Dim intStatus As Integer = DB2IntZero(dt(0)("status"))
+                        'poiščem še zadnji datum potrditve, dobave
+
+                        dtmDatum = CDate(dt.Rows(i)("mdate")).Date
+
+                        If UpdateMSoraOrderInfo_Status_Date_6(connTools, strOrderNrN, dtmDatum, intStatus) Then
+                            Call AddToActionStatusNarocila(Me.txtLog, strOrderNrN & vbTab & dtmDatum & vbTab & "OK" & vbCrLf)
+                        End If
+                    End If
+                Next
+            End Using
+        End Using
+
+        Call AddToActionStatusNarocila(Me.txtLog, "Konec - AutoProcessOrderStatus")
+    End Sub
+
+    Private Sub cmdExportTexts_Click(sender As Object, e As EventArgs) Handles cmdExportTexts.Click
+        If MsgBox("Ali res želiš posodobiti tekste na internetu?", vbYesNo) = vbYes Then
+            Call ExportTexts()
+            MsgBox("Podatki uvoženi na Google!")
+        End If
+
+    End Sub
+
+    Private Sub cmdFirebase_Click(sender As Object, e As EventArgs) Handles cmdFirebase.Click
+        Dim path As String = AppDomain.CurrentDomain.BaseDirectory + cls.Config.FirebaseAuthSecret
+        Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path)
+        Dim db As FirestoreDb = FirestoreDb.Create(cls.Config.FirebaseBasePath)
+
+        Dim strKey As String = "1qiRWcwu07f4UPFHBug4"
+
+        Dim docCol As CollectionReference
+
+        docCol = db.Collection("orders")
+
+        Dim q As Query = docCol.WhereEqualTo("order_nr", "N20*")
+
+        'Dim ds As Google.Cloud.Firestore.DocumentSnapshot = q.GetSnapshotAsync
+
+        Dim ds As Google.Cloud.Firestore.QuerySnapshot = q.GetSnapshotAsync.Result
+
+        If Not ds Is Nothing Then
+            Dim dt As Google.Cloud.Firestore.DocumentSnapshot
+            For i = 0 To ds.Count - 1
+                dt = ds(i)
+                If dt.ContainsField("order_nr").ToString Then
+
+                    Dim dict As New Dictionary(Of String, Object)
+
+                    dict = dt.ToDictionary
+
+                    Debug.Print(dict("order_nr").ToString)
+
+                End If
+            Next
+        End If
+
+    End Sub
+
+    Private Sub cmdImportTexts_Click(sender As Object, e As EventArgs) Handles cmdImportTexts.Click
+        If MsgBox("Ali res želiš posodobiti tekste na lokalni bazi s teksti z interneta?", vbYesNo) = vbYes Then
+            Call ImportTexts()
+            MsgBox("Podatki uvoženi iz Googla!")
+        End If
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim strDatum As String = InputBox("Vpiši datum, od katerega dalje naj se posodobijo podatki na internetu!")
+        If IsValidDate(CDate(strDatum)) Then
+            Call UpdateMSoraOrderInfoAll(CDate(strDatum))
+        End If
 
     End Sub
 End Class

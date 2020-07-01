@@ -400,7 +400,6 @@ Module modMawi
 
     Public Function GetMawiOrderArticles(ByVal lngOrderId As Long, ByVal dtmExpectationDate As Date, ByVal dtmExpectationDate2 As Date, ByVal strArticleTypes As String, connMAWI As SqlConnection) As DataTable
         Dim strSQL As String
-        Dim conn As SqlConnection
         Dim dt As DataTable
         Dim dtmTemp As Date = Nothing
 

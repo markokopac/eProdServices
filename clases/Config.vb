@@ -1,7 +1,15 @@
 ﻿Namespace cls
 
     Public Class Config
+
+        Public Shared mstr_TOOLSName As String
         Public Shared iniFile As cIni = Nothing
+
+        Public Shared ReadOnly Property ToolsDatabaseName() As String
+            Get
+                Return iniFile.ReadValue("Connection", "tools_database_name", "[KlaesTools].[dbo]")
+            End Get
+        End Property
         Public Shared ReadOnly Property GetCollation() As String
             Get
                 Return iniFile.ReadValue("Connection", "colation", "collate Latin1_General_CI_AS_WS")
@@ -70,7 +78,7 @@
                 Return iniFile.ReadValue("Connection", "connstring_plan", "")
             End Get
         End Property
-        
+
 
         Public Shared ReadOnly Property ActionLogUpdateName() As String
             Get
@@ -253,7 +261,21 @@
             End Get
         End Property
 
-
+        Public Shared ReadOnly Property GetOrderStatusStartTime() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "StartTime", "06:00")
+            End Get
+        End Property
+        Public Shared ReadOnly Property GetOrderStatusEndTime() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "EndTime", "15:00")
+            End Get
+        End Property
+        Public Shared ReadOnly Property GetOrderStatusDays() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "UpdateDays", "1,2,3,4,5")
+            End Get
+        End Property
 #Region "Cutter"
 
         Public Shared ReadOnly Property GetCutterSourcePath() As String
@@ -444,7 +466,7 @@
                 Return iniFile.ReadValue("UpdateSklic", "EndTime", "15:00")
             End Get
         End Property
-        
+
 
         Public Shared ReadOnly Property GetSklicDays() As String
             Get
@@ -681,6 +703,12 @@
             End Get
         End Property
 
+        Public Shared ReadOnly Property AutoStartOrderStatus() As Boolean
+            Get
+                Return iniFile.ReadValue("Settings", "AutoStartOrderStatus", 0)
+            End Get
+        End Property
+
         Public Shared ReadOnly Property AutoStartKapaLog() As Boolean
             Get
                 Return iniFile.ReadValue("Settings", "AutoStartKapaLog", 0)
@@ -776,6 +804,11 @@
             End Get
         End Property
 
+        Public Shared ReadOnly Property ActionLogOrderStatus() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "ActionLog", "MSORAOrderStatus.log")
+            End Get
+        End Property
 
         Public Shared ReadOnly Property GetTechnicalLockUpdateInterval() As Integer
             Get
@@ -783,12 +816,79 @@
             End Get
         End Property
 
+
+
         Public Shared ReadOnly Property GetTechnicalLockCheckDaysBack() As Integer
             Get
-                Return iniFile.ReadValue("LockTechnicalOrders", "CheckDaysBack", 2)
+                Return iniFile.ReadValue("LockTechnicalOrders", "CheckDaysBack", 10)
             End Get
         End Property
 
+        Public Shared ReadOnly Property GetStatusNarocilaInterval() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckInterval", 60)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetOrderStatusCheckDaysBack1() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckDaysBack1", 10)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetOrderStatusCheckDaysBack2() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckDaysBack2", 10)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetOrderStatusCheckDaysBack3() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckDaysBack3", 10)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetOrderStatusCheckDaysBack4() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckDaysBack4", 10)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetOrderStatusCheckDaysBack5() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckDaysBack5", 10)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetOrderStatusCheckDaysBack6() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CheckDaysBack6", 10)
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetMapaArhiv() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "mapa_arhiv", "\\SZMZSV04\network\Skupno\Arhiv_Dokument\")
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GetLeta() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "Leta", "2019,2020")
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property FolderNames() As String
+            Get
+                Return iniFile.ReadValue("OrderStatus", "FolderNames", "")
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property CreateFolders() As Integer
+            Get
+                Return iniFile.ReadValue("OrderStatus", "CreateFolders", 0)
+            End Get
+        End Property
         Public Shared ReadOnly Property GetUnlockMin() As Integer
             Get
                 Return iniFile.ReadValue("LockTechnicalOrders", "unlock_min", 60)
@@ -798,6 +898,18 @@
         Public Shared ReadOnly Property TechnicalLockUser() As Long
             Get
                 Return iniFile.ReadValue("LockTechnicalOrders", "User", "-1")
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property FirebaseAuthSecret() As String
+            Get
+                Return iniFile.ReadValue("Firebase", "AuthSecret", "")
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property FirebaseBasePath() As String
+            Get
+                Return iniFile.ReadValue("Firebase", "BasePath", "")
             End Get
         End Property
 #End Region

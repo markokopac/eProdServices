@@ -132,6 +132,10 @@ Module modGlobal
         workRow("desc") = "Naknadna dobava materiala"
         dt.Rows.Add(workRow)
 
+        workRow = dt.NewRow()
+        workRow("id") = clsGlobal.EventType.event_google_order_created
+        workRow("desc") = "Spletna informacija o naročilu"
+        dt.Rows.Add(workRow)
         cbo.DataSource = dt.DefaultView
         cbo.DisplayMember = "desc"
         cbo.ValueMember = "id"
